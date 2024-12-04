@@ -1,54 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Клас EmailSender займається як відправкою повідомлень, так і логуванням, що порушує SRP.
 
-namespace HW8
+//Виправлення: Винести логування в окремий клас.
+class Email
 {
-    // Порушено принцип єдиної відповідальності (Single Responsibility Principle).
-    // Клас EmailSender має кілька обов'язків: відправка листів та логування.
-    // Виправлення: розділити логіку логування та відправки листів. Логування винести в окремий клас, що реалізує інтерфейс ILogger.
+    public string Theme { get; set; }
+    public string From { get; set; }
+    public string To { get; set; }
+}
 
-    class Email
+// Логування винесено в окремий клас
+class Logger
+{
+    public void Log(string message)
     {
-        public string Theme { get; set; }
-        public string From { get; set; }
-        public string To { get; set; }
+        Console.WriteLine(message);
+    }
+}
+
+class EmailSender
+{
+    private readonly Logger _logger;
+
+    public EmailSender(Logger logger)
+    {
+        _logger = logger;
     }
 
-    // Інтерфейс для логування
-    interface ILogger
+    public void Send(Email email)
     {
-        void Log(string message);
+        _logger.Log($"Email from '{email.From}' to '{email.To}' was sent");
     }
+}
 
-    class ConsoleLogger : ILogger
+class Program
+{
+    static void Main(string[] args)
     {
-        public void Log(string message)
-        {
-            Console.WriteLine(message);
-        }
+        Logger logger = new Logger();
+        EmailSender emailSender = new EmailSender(logger);
+
+        Email email = new Email() { From = "Me", To = "Vasya", Theme = "Hello!" };
+        emailSender.Send(email);
+
+        Console.ReadKey();
     }
-
-    // Клас для відправки електронних листів
-    class EmailSender
-    {
-        private readonly ILogger _logger;
-
-        // Конструктор приймає логер
-        public EmailSender(ILogger logger)
-        {
-            _logger = logger;
-        }
-
-        public void Send(Email email)
-        {
-            // Відправка листа...
-            _logger.Log($"Email from '{email.From}' to '{email.To}' was sent");
-        }
-    }
-
-    
-
 }

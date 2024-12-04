@@ -1,99 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// Клас Order порушує SRP, оскільки виконує кілька завдань: керування списком товарів, розрахунок суми, друк замовлення, збереження/завантаження даних тощо.
 
-
-// порушено Single Responsibility Principle
-//клас Order виконує кілька різних задач
-//виправлення :
-//окремий клас для роботи з товарними елементами замовлення OrderItemManager
-//окремий клас для зберігання та завантаження даних OrderPersistence
-//  Окремий клас для представлення друку чи відображення замовлення OrderPrinter
-
-namespace HW8
+//Виправлення: Розбити клас на кілька класів, кожен із яких відповідає за одну функцію.
+class Item
 {
-    class Item
+}
+
+class Order
+{
+    private List<Item> items = new List<Item>();
+
+    public void AddItem(Item item) => items.Add(item);
+    public void DeleteItem(Item item) => items.Remove(item);
+    public List<Item> GetItems() => items;
+}
+
+class OrderCalculator
+{
+    public decimal CalculateTotalSum(Order order)
     {
-        public int Price;
+        return 0m;
+    }
+}
+
+class OrderPrinter
+{
+    public void PrintOrder(Order order)
+    {
+    }
+}
+
+class OrderRepository
+{
+    public void Save(Order order)
+    {
     }
 
-    class Order
+    public Order Load(int orderId)
     {
-        private List<Item> itemList;
-
-        public Order()
-        {
-            itemList = new List<Item>();
-        }
-
-        public void AddItem(Item item)
-        {
-            itemList.Add(item);
-        }
-
-        public void DeleteItem(Item item)
-        {
-            itemList.Remove(item);
-        }
-
-        public List<Item> GetItems()
-        {
-            return itemList;
-        }
-
-        public int GetItemCount()
-        {
-            return itemList.Count;
-        }
-
-        public decimal CalculateTotalSum()
-        {
-            decimal total = 0;
-            foreach (var item in itemList)
-            {
-                
-                total += item.Price;
-            }
-            return total;
-        }
+        return new Order();
     }
-
-    class OrderPersistence
-    {
-        public void Save(Order order)
-        {
-         
-        }
-
-        public void Load(Order order)
-        {
-           
-        }
-
-        public void Update(Order order)
-        {
-            
-        }
-
-        public void Delete(Order order)
-        {
-            
-        }
-    }
-
-    class OrderPrinter
-    {
-        public void PrintOrder(Order order)
-        {
-           
-        }
-
-        public void ShowOrder(Order order)
-        {
-           
-        }
-    }
-
 }
